@@ -1,0 +1,23 @@
+.Controls {
+  padding-bottom: 50px;
+}
+
+.Controls button {
+  background-color: cornflowerblue;
+  color: #222;
+  font-weight: bold;
+  border: none;
+  border-radius: 3px;
+  margin: 5px;
+  padding: 8px 15px;
+  cursor: pointer;
+  transition: background-color 200ms;
+}
+
+.Controls button:focus {
+  outline: none;
+}
+
+.Controls button:hover {
+  background-color: #75A6FE;
+}

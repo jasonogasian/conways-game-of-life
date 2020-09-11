@@ -1,0 +1,16 @@
+.Cell {
+  border: 1px solid lime;
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  vertical-align: top;
+  transition: background-color 400ms;
+}
+
+.Cell.alive {
+  background-color: darkcyan;
+}
+
+.Cell.dead {
+  background-color: #000;
+}
