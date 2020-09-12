@@ -6,6 +6,11 @@ import Cell from 'components/Cell/Cell';
 
 import './App.css';
 
+
+export type appMode = 'generate' | 'automating' | 'normal';
+export type generateOptions = {x:number, y:number};
+
+
 const INITIAL_GRID = WOW;
 const ALIVE = true;
 const DEAD = false;
@@ -16,10 +21,13 @@ const dark = !!window.matchMedia && window.matchMedia('(prefers-color-scheme: da
 
 export default function App() {
   const [ darkMode, setDarkMode ] = useState(dark);
+  const [ generateMode, setGenerateMode ] = useState(false);
   const [ grid, setGrid ] = useState<boolean[][]>(INITIAL_GRID);
   const [ automate, setAutomate ] = useState<any>(null);
   const [ cellSize, setCellSize ] = useState(0);
+  
   const boardRef = useRef(null);
+  const mode:appMode = generateMode ? 'generate' : automate ? 'automating' : 'normal';
 
   useEffect(() => {
     calculateCellSize();
@@ -68,12 +76,31 @@ export default function App() {
   }
 
 
+  const handleSetGenerate = (options:generateOptions | null) => {
+    // if (generateMode) {
+    //   setGenerateMode(false);
+    // }
+    if (options) {
+      setGenerateMode(true);
+      setGrid(createEmptyGrid(options))
+    }
+    else {
+      setGenerateMode(true);
+    }
+  }
+
+
   return (
     <div className={ 'App ' + (darkMode ? 'dark' : 'light') }>
-      <Controls onAdvance={ updateGrid } onReset={ handleReset } onAutomate={ handleSetAutomate } />
+      <Controls
+        mode={ mode }
+        onAdvance={ updateGrid }
+        onReset={ handleReset }
+        onAutomate={ handleSetAutomate }
+        onGenerate={ handleSetGenerate } />
       
       <div className="board" ref={ boardRef }>
-        { 
+        { cellSize > 0 && // Don't render before we calulate cellSize
           grid.map((row:Array<boolean>, rowIdx:number) => (
             <div className="row" style={{ height: cellSize }} key={ rowIdx }>
               { 
@@ -156,4 +183,18 @@ function countAlive(arr:any):number {
     }, 0);
   }
   return count;
+}
+
+
+function createEmptyGrid(size:generateOptions):boolean[][] {
+  const grid:boolean[][] = [];
+  for (let r=0; r<size.y; r++) {
+    grid[r] = [];
+
+    for (let c=0; c<size.x; c++) {
+      grid[r].push(DEAD);
+    }
+  }
+
+  return grid;
 }

@@ -1,5 +1,7 @@
 .Controls {
   padding-bottom: 50px;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .Controls button {
@@ -9,9 +11,10 @@
   border: none;
   border-radius: 3px;
   margin: 5px;
-  padding: 8px 15px;
+  padding: 8px 0;
   cursor: pointer;
   transition: background-color 200ms;
+  width: 20%;
 }
 
 .Controls button:focus {
