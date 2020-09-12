@@ -1,10 +1,9 @@
 .Cell {
   border: 1px solid lime;
-  width: 20px;
-  height: 20px;
   display: inline-block;
   vertical-align: top;
   transition: background-color 400ms;
+  box-sizing: border-box;
 }
 
 .Cell.alive {

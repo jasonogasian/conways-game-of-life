@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { TOAD, GLIDER, WOW } from "patterns";
 import Controls from 'components/controls/Controls';
 
@@ -18,6 +18,24 @@ export default function App() {
   const [ darkMode, setDarkMode ] = useState(dark);
   const [ grid, setGrid ] = useState<boolean[][]>(INITIAL_GRID);
   const [ automate, setAutomate ] = useState<any>(null);
+  const [ cellSize, setCellSize ] = useState(0);
+  const boardRef = useRef(null);
+
+  useEffect(() => {
+    calculateCellSize();
+    
+    window.onresize = calculateCellSize;
+    return () => {
+      window.onresize = null;
+    }
+
+    function calculateCellSize() {
+      // @ts-ignore
+      const boardWidth = boardRef && boardRef.current ? boardRef.current.clientWidth : 0;
+      const cellCount = grid.length ? grid[0].length : 0;
+      setCellSize(Math.floor(boardWidth/cellCount));
+    }
+  }, [boardRef])
 
 
   // Color scheme (white makes me sad)
@@ -38,11 +56,6 @@ export default function App() {
   }
 
 
-  const handleAdvanceGeneration = () => {
-    updateGrid();
-  }
-
-
   const handleSetAutomate = () => {
     if (automate) {
       clearInterval(automate);
@@ -57,15 +70,15 @@ export default function App() {
 
   return (
     <div className={ 'App ' + (darkMode ? 'dark' : 'light') }>
-      <Controls onAdvance={ handleAdvanceGeneration } onReset={ handleReset } onAutomate={ handleSetAutomate } />
+      <Controls onAdvance={ updateGrid } onReset={ handleReset } onAutomate={ handleSetAutomate } />
       
-      <div className="board">
+      <div className="board" ref={ boardRef }>
         { 
           grid.map((row:Array<boolean>, rowIdx:number) => (
-            <div className="row" key={ rowIdx }>
+            <div className="row" style={{ height: cellSize }} key={ rowIdx }>
               { 
                 row.map((cell:boolean, cellIdx:number) => (
-                  <Cell alive={ cell } key={ cellIdx } />
+                  <Cell alive={ cell } key={ cellIdx } size={ cellSize } />
                 ))
               }
             </div>
@@ -118,6 +131,20 @@ function calculateGrid(grid:boolean[][]):boolean[][] {
   }
   return newGrid;
 }
+
+
+// function calculateGrid(grid:boolean[][]):boolean[][] {
+//   const newGrid:boolean[][] = [];
+//   const rowCount = grid.length;
+
+//   // Loop through each cell in every row at once
+//   // (we know that all rows are the same lenght)
+//   for (let r=0; r<rowCount; r++) {
+
+//   }
+
+//   return newGrid;
+// }
 
 
 // Fun with reduce
