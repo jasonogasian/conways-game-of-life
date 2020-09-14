@@ -1,51 +1,71 @@
 import React, { useState } from 'react';
 
 import './Controls.css';
-import { appMode, generateOptions } from 'components/App/App';
+import { generateOptions } from 'components/App/App';
+
+type controleMode = 'generate' | 'automating' | 'normal';
 
 
 type ControlsProps = {
-  mode: appMode,
   onAdvance: () => void,
   onReset: () => void,
   onAutomate: () => void,
-  onGenerate: (options:generateOptions | null) => void,
+  onUpdateGridSize: (options:generateOptions) => void,
 }
 
 const Controls:React.FC<ControlsProps> = (props) => {
-  const [ x, setX ] = useState(10);
-  const [ y, setY ] = useState(10);
+  const [ mode, setMode ] = useState<controleMode>('normal');
+  const [ x, setX ] = useState(20);
+  const [ y, setY ] = useState(15);
 
-  const mode = props.mode;
   const autoText = mode === 'automating' ? 'Stop' : 'Automate';
   const genText = mode === 'generate' ? 'Use' : 'Create';
 
 
+  const handleInputChange = (x:number, y:number) => {
+    setX(x);
+    setY(y);
+    props.onUpdateGridSize({x, y});
+  }
+
+
   const handleGenerateClick = () => {
     if (mode === 'generate') {
-      props.onGenerate({x, y});
+      setMode('normal')
+    }
+    else if (mode === 'normal') {
+      setMode('generate');
+      props.onUpdateGridSize({x, y});
+    }
+  }
+
+
+  const handleAutomateClick = () => {
+    if (mode === 'normal') {
+      setMode('automating');
     }
     else {
-      props.onGenerate(null);
+      setMode('normal');
     }
+    props.onAutomate();
   }
   
   
   return (
     <div className="Controls">
-      <button onClick={ props.onAdvance }>
+      <button disabled={ mode === 'generate' } onClick={ props.onAdvance }>
         Step
       </button>
 
-      <button onClick={ props.onReset }>
+      <button disabled={ mode === 'generate' } onClick={ props.onReset }>
         Restart
       </button>
 
-      <button onClick={ props.onAutomate }>
+      <button disabled={ mode === 'generate' } onClick={ handleAutomateClick }>
         { autoText }
       </button>
 
-      <button onClick={ handleGenerateClick }>
+      <button disabled={ mode === 'automating' } onClick={ handleGenerateClick }>
         { genText }
       </button>
 
@@ -54,12 +74,12 @@ const Controls:React.FC<ControlsProps> = (props) => {
         <div className="generate-form">
           <label>
             X:
-            <input type="number" value={ x } onChange={ e => setX(parseInt(e.target.value)) } />
+            <input type="number" value={ x } onChange={ e => handleInputChange(parseInt(e.target.value), y) } />
           </label>
 
           <label>
             Y:
-            <input type="number" value={ y } onChange={ e => setY(parseInt(e.target.value)) } />
+            <input type="number" value={ y } onChange={ e => handleInputChange(x, parseInt(e.target.value)) } />
           </label>
         </div>
       }

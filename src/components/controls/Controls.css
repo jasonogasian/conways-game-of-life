@@ -24,3 +24,9 @@
 .Controls button:hover {
   background-color: #75A6FE;
 }
+
+.Controls button:disabled {
+  background-color: gray;
+  color: #444;
+  cursor: inherit;
+}

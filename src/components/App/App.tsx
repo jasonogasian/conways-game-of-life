@@ -7,7 +7,6 @@ import Cell from 'components/Cell/Cell';
 import './App.css';
 
 
-export type appMode = 'generate' | 'automating' | 'normal';
 export type generateOptions = {x:number, y:number};
 
 
@@ -21,13 +20,12 @@ const dark = !!window.matchMedia && window.matchMedia('(prefers-color-scheme: da
 
 export default function App() {
   const [ darkMode, setDarkMode ] = useState(dark);
-  const [ generateMode, setGenerateMode ] = useState(false);
   const [ grid, setGrid ] = useState<boolean[][]>(INITIAL_GRID);
   const [ automate, setAutomate ] = useState<any>(null);
   const [ cellSize, setCellSize ] = useState(0);
+  const [ generating, setGenerating ] = useState(false);
   
   const boardRef = useRef(null);
-  const mode:appMode = generateMode ? 'generate' : automate ? 'automating' : 'normal';
 
   useEffect(() => {
     calculateCellSize();
@@ -43,7 +41,7 @@ export default function App() {
       const cellCount = grid.length ? grid[0].length : 0;
       setCellSize(Math.floor(boardWidth/cellCount));
     }
-  }, [boardRef])
+  }, [boardRef, grid])
 
 
   // Color scheme (white makes me sad)
@@ -76,28 +74,31 @@ export default function App() {
   }
 
 
-  const handleSetGenerate = (options:generateOptions | null) => {
-    // if (generateMode) {
-    //   setGenerateMode(false);
-    // }
-    if (options) {
-      setGenerateMode(true);
-      setGrid(createEmptyGrid(options))
+  const handleUpdateGridSize = (options:generateOptions) => {
+    if (options.x && options.y) {
+      setGenerating(true);
+      setGrid(createEmptyGrid(options));
     }
-    else {
-      setGenerateMode(true);
-    }
+  }
+
+
+  const handleCellClick = (row:number, cell:number) => {
+    const newGrid = grid.slice();
+    const rowCopy = newGrid[row].slice();
+    rowCopy[cell] = !rowCopy[cell];
+    newGrid[row] = rowCopy;
+
+    setGrid(newGrid);
   }
 
 
   return (
     <div className={ 'App ' + (darkMode ? 'dark' : 'light') }>
       <Controls
-        mode={ mode }
         onAdvance={ updateGrid }
         onReset={ handleReset }
         onAutomate={ handleSetAutomate }
-        onGenerate={ handleSetGenerate } />
+        onUpdateGridSize={ handleUpdateGridSize } />
       
       <div className="board" ref={ boardRef }>
         { cellSize > 0 && // Don't render before we calulate cellSize
@@ -105,7 +106,11 @@ export default function App() {
             <div className="row" style={{ height: cellSize }} key={ rowIdx }>
               { 
                 row.map((cell:boolean, cellIdx:number) => (
-                  <Cell alive={ cell } key={ cellIdx } size={ cellSize } />
+                  <Cell key={ cellIdx }
+                    alive={ cell }
+                    size={ cellSize } 
+                    selectable={ generating }
+                    onClick={ () => handleCellClick(rowIdx, cellIdx) } />
                 ))
               }
             </div>

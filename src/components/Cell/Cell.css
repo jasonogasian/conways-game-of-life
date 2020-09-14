@@ -13,3 +13,11 @@
 .Cell.dead {
   background-color: #000;
 }
+
+.Cell.selectable {
+  cursor: pointer;
+  transition: background-color 200ms;
+}
+.Cell.selectable.dead:hover {
+  background-color: #255;
+}
