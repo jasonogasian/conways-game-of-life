@@ -70,8 +70,11 @@ const App:React.FC = (props) => {
   }
 
 
-  const handleUpdateGridSize = (options:generateOptions) => {
-    if (options.x && options.y) {
+  const handleUpdateGridSize = (options:generateOptions | null) => {
+    if (options === null) {
+      setGenerating(false);
+    }
+    else if (options.x && options.y) {
       setGenerating(true);
       setGrid(createEmptyGrid(options));
     }

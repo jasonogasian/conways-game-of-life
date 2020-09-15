@@ -10,7 +10,7 @@ type ControlsProps = {
   onAdvance: () => void,
   onReset: () => void,
   onAutomate: () => void,
-  onUpdateGridSize: (options:generateOptions) => void,
+  onUpdateGridSize: (options:generateOptions | null) => void,
 }
 
 const Controls:React.FC<ControlsProps> = (props) => {
@@ -31,7 +31,8 @@ const Controls:React.FC<ControlsProps> = (props) => {
 
   const handleGenerateClick = () => {
     if (mode === 'generate') {
-      setMode('normal')
+      setMode('normal');
+      props.onUpdateGridSize(null);
     }
     else if (mode === 'normal') {
       setMode('generate');

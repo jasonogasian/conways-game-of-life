@@ -1,17 +1,25 @@
 .Cell {
-  border: 1px solid lime;
+  border-top: 1px solid #000;
+  border-right: 1px solid #000;
   display: inline-block;
   vertical-align: top;
   transition: background-color 400ms;
   box-sizing: border-box;
 }
+.Cell:first-child {
+  border-left: 1px solid #000;
+}
+
+.row:last-of-type .Cell {
+  border-bottom: 1px solid #000;
+}
 
 .Cell.alive {
-  background-color: darkcyan;
+  background-color: cornflowerblue;
 }
 
 .Cell.dead {
-  background-color: #000;
+  background-color: #FFF;
 }
 
 .Cell.selectable {
@@ -19,5 +27,22 @@
   transition: background-color 200ms;
 }
 .Cell.selectable.dead:hover {
+  background-color: #a8d9ff;
+}
+
+
+/**
+ * Dark Mode
+ **/
+.dark .Cell {
+  border-color: lime;
+}
+.dark .Cell.alive {
+  background-color: darkcyan;
+}
+.dark .Cell.dead {
+  background-color: #000;
+}
+.dark .Cell.selectable.dead:hover {
   background-color: #255;
 }
