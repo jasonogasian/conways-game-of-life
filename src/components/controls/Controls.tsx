@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import './Controls.css';
-import { generateOptions } from 'components/App/App';
+import { generateOptions } from 'lib/utils';
 
 type controleMode = 'generate' | 'automating' | 'normal';
 
