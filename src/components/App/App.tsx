@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { TOAD, GLIDER, WOW } from "patterns";
+import { WOW } from "patterns";
+import { calculateGrid, createEmptyGrid, generateOptions } from 'lib/utils';
 import Controls from 'components/controls/Controls';
 
 import Cell from 'components/Cell/Cell';
 
 import './App.css';
-import { calculateGrid, createEmptyGrid, generateOptions } from 'lib/utils';
 
 
 const INITIAL_GRID = WOW;
@@ -20,7 +20,7 @@ const App:React.FC = (props) => {
   const [ automate, setAutomate ] = useState<any>(null);
   const [ cellSize, setCellSize ] = useState(0);
   const [ generating, setGenerating ] = useState(false);
-  
+    
   const boardRef = useRef(null);
 
   useEffect(() => {
